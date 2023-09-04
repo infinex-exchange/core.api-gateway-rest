@@ -1,18 +1,13 @@
 <?php
 
-define('DEBUG_MODE', 1);
-
-define('DB_HOST', 'localhost');
-define('DB_USER', 'pusher');
-define('DB_PASS', 'password');
-define('DB_NAME', 'vayamos');
+define('LOG_LEVEL', 0);
 
 define('RMQ_HOST', 'localhost');
 define('RMQ_PORT', 5672);
-define('RMQ_USER', 'pusher');
+define('RMQ_USER', 'apigwrest');
 define('RMQ_PASS', 'password');
 
-define('WS_BIND_ADDR', '0.0.0.0');
-define('WS_BIND_PORT', 8080);
+define('HTTP_BIND_ADDR', '0.0.0.0');
+define('HTTP_BIND_PORT', 8080);
 
 ?>
