@@ -1,0 +1,8 @@
+{
+    "require": {
+        "cboden/ratchet": "^0.4.4",
+        "react/react": "^1.2",
+        "php-amqplib/php-amqplib": "^3.2",
+        "php-decimal/php-decimal": "^1.1"
+    }
+}
