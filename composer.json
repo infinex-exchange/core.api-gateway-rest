@@ -1,6 +1,12 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/infinex-exchange/common"
+        }
+    ],
     "require": {
-        "cboden/ratchet": "^0.4.4",
-        "react/react": "^1.2",
+        "infinex-exchange/common": "dev-main",
+        "react/http": "^1.8"
     }
 }
