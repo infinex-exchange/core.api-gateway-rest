@@ -9,6 +9,7 @@ class HttpServer {
     private $amqp;
     private $server;
     private $socket;
+    private $startTimer;
     
     function __construct($loop, $logger, $amqp) {
         $this -> loop = $loop;
@@ -61,13 +62,24 @@ class HttpServer {
     
     public function start() {
         if($this -> socket === null) {
-            $this -> socket = new React\Socket\SocketServer(
-                HTTP_BIND_ADDR.':'.HTTP_BIND_PORT,
-                [],
-                $this -> loop
-            );
-        
-            $this -> server -> listen($this -> server);
+            try {
+                $this -> socket = new React\Socket\SocketServer(
+                    HTTP_BIND_ADDR.':'.HTTP_BIND_PORT,
+                    [],
+                    $this -> loop
+                );
+            
+                $this -> server -> listen($this -> server);
+                
+                $this -> startTimer = null;
+            } catch(Exception $e) {
+                $this -> logger -> error('Cannot start HTTP server: '.$e -> getMesssage());
+                
+                $th = $this;
+                $this -> startTimer = $this -> loop -> addTimer(1000, function() use($th) {
+                    $th -> start();
+                });
+            }
             
             return;
         }
@@ -76,6 +88,12 @@ class HttpServer {
     }
     
     public function stop() {
+        if($this -> startTimer !== null) {
+            $this -> loop -> cancelTimer($this -> startTimer);
+            $this -> startTimer = null;
+            return;
+        }
+        
         $this -> socket -> pause();
     }
 }
