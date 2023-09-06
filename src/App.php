@@ -8,7 +8,7 @@ class App extends Infinex\App\Daemon {
     function __construct() {
         parent::__construct('api-gateway-rest');
         
-        $this -> http = new HttpServer($this -> loop);
+        $this -> http = new HttpServer($this -> loop, $this -> log, $this -> amqp);
         
         $th = $this;
         $this -> amqp -> on('connect', function() use($th) {
