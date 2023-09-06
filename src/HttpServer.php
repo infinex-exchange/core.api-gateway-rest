@@ -31,8 +31,7 @@ class HttpServer {
                     'path' => $path,
                     'query' => $query,
                     'body' => $body,
-                ],
-                3
+                ]
             ) -> then(
                 function($resp) use($th) {
                     return new Response(
