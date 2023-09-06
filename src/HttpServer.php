@@ -25,7 +25,7 @@ class HttpServer {
             $body = json_decode($request -> getBody(), true);
                     
             return $th -> amqp -> call(
-                'api',
+                'api_auth',
                 [
                     'method' => $method,
                     'path' => $path,
