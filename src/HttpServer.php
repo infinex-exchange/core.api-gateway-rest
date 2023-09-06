@@ -24,11 +24,11 @@ class HttpServer {
             $query = $request -> getQueryParams();
             $body = json_decode($request -> getBody(), true);
             
-            $token = null;
+            $apiKey = null;
             $auth = $request -> getHeaderLine('Authorization');
             $auth = explode(' ', $auth);
             if(count($auth) == 2 && strtolower($auth[0]) == 'bearer')
-                $auth = $auth[1];
+                $apiKey = $auth[1];
                     
             return $th -> amqp -> call(
                 'api_auth',
@@ -37,7 +37,7 @@ class HttpServer {
                     'path' => $path,
                     'query' => $query,
                     'body' => $body,
-                    'token' => $token
+                    'apiKey' => $apiKey
                 ]
             ) -> then(
                 function($resp) use($th) {
