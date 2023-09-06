@@ -35,6 +35,17 @@ class HttpServer {
             ) -> then(
                 function($resp) use($th) {
                     return new Response(
+                        $resp -> status,
+                        [
+                            'Content-Type' => 'application/json',
+                            'Access-Control-Allow-Origin' => '*'
+                        ],
+                        json_encode($resp -> body, JSON_PRETTY_PRINT)
+                    );
+                }
+            ) -> catch(
+                function(RPCException $e) use($th) {
+                    return new Response(
                         200,
                         [
                             'Content-Type' => 'application/json',
@@ -44,14 +55,22 @@ class HttpServer {
                     );
                 }
             ) -> catch(
-                function(Exception $e) use($th) {
+                function(RPCTimeout $e) use($th) {
                     return new Response(
-                        200,
+                        504,
                         [
                             'Content-Type' => 'application/json',
                             'Access-Control-Allow-Origin' => '*'
                         ],
-                        json_encode($obj, JSON_PRETTY_PRINT)
+                        json_encode(
+                            [
+                                'error' => [
+                                    'code' => 'TIMEOUT',
+                                    'msg' => '',
+                                ]
+                            ],
+                            JSON_PRETTY_PRINT
+                        )
                     );
                 }
             );
