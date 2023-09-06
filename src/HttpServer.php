@@ -2,83 +2,81 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
-use React\Promise\Promise;
 
 class HttpServer {
-    private $http;
+    private $loop;
+    private $logger;
+    private $amqp;
     private $server;
+    private $socket;
     
-    function __construct($app) {
-        $this -> app = $app;
+    function __construct($loop, $logger, $amqp) {
+        $this -> loop = $loop;
+        $this -> logger = $logger;
+        $this -> amqp = $amqp;
         
-        $this -> http = new React\Http\HttpServer(function (ServerRequestInterface $request) use ($th, $dispatcher) {
-            $request->getMethod()
-            $request -> getUri() -> getPath()
-            
-                    $get = $request -> getQueryParams();
-                    $post = json_decode($request -> getBody(), true);
+        $th = $this;
+        $this -> server = new React\Http\HttpServer(function (ServerRequestInterface $request) use ($th) {
+            $method = request -> getMethod();
+            $path = $request -> getUri() -> getPath();
+            $query = $request -> getQueryParams();
+            $body = json_decode($request -> getBody(), true);
                     
-                    $promise = new Promise(
-                        function($resolve, $reject) use($routeInfo, $get, $post) {
-                            $routeInfo[1]($resolve, $routeInfo[2], $get, $post);
-                        }
+            return $th -> amqp -> call(
+                'api',
+                [
+                    'method' => $method,
+                    'path' => $path,
+                    'query' => $query,
+                    'body' => $body,
+                ],
+                3
+            ) -> then(
+                function($resp) use($th) {
+                    return new Response(
+                        200,
+                        [
+                            'Content-Type' => 'application/json',
+                            'Access-Control-Allow-Origin' => '*'
+                        ],
+                        json_encode($obj, JSON_PRETTY_PRINT)
                     );
-                    
-                    return $promise -> then(
-                        function($resp) use($th) {
-                            if($resp instanceof Response) return $resp;
-                            return $th -> respJson($resp);
-                        }
-                    ) -> catch(
-                        function(EHttpNotFound $e) use($th) {
-                            return $th -> respNotFound();
-                        }
-                    ) -> catch(
-                        function(Exception $e) use($th) {
-                            return $th -> respError($e -> getMessage());
-                        }
+                }
+            ) -> catch(
+                function(Exception $e) use($th) {
+                    return new Response(
+                        200,
+                        [
+                            'Content-Type' => 'application/json',
+                            'Access-Control-Allow-Origin' => '*'
+                        ],
+                        json_encode($obj, JSON_PRETTY_PRINT)
                     );
+                }
+            );
         });
         
-        $url = 'tls://'.$app -> config -> get($app -> module.'.http.bind_addr').':'.$app -> config -> get($app -> module.'.http.bind_port');
-        $this -> server = new React\Socket\SocketServer(
-            $url,
-            [
-                'tls' => [
-                    'local_cert' => $this -> getPem()
-                ]
-            ],
-            $app -> loop
-        );
+        $this -> logger -> debug('Initialized HTTP server');
+    }
+    
+    public function start() {
+        if($this -> socket === null) {
+            $this -> socket = new React\Socket\SocketServer(
+                HTTP_BIND_ADDR.':'.HTTP_BIND_PORT,
+                [],
+                $this -> loop
+            );
         
-        $this -> http -> listen($this -> server);
+            $this -> server -> listen($this -> server);
+            
+            return;
+        }
+        
+        $this -> socket -> resume();
     }
     
-    private function respJson($obj) {
-        return new Response(
-            200,
-            [
-                'Content-Type' => 'application/json',
-                'Access-Control-Allow-Origin' => '*'
-            ],
-            json_encode($obj, JSON_PRETTY_PRINT)
-        );
-    }
-    
-    private function respNotFound() {
-        return new Response(
-            404,
-            ['Content-Type' => 'text/plain'],
-            'Not found'
-        );
-    }
-    
-    private function respError($text) {
-        return new Response(
-            500,
-            ['Content-Type' => 'text/plain'],
-            $text
-        );
+    public function stop() {
+        $this -> socket -> pause();
     }
 }
 
