@@ -6,15 +6,15 @@ use Infinex\AMQP\RPCException;
 
 class HttpServer {
     private $loop;
-    private $logger;
+    private $log;
     private $amqp;
     private $server;
     private $socket;
     private $startTimer;
     
-    function __construct($loop, $logger, $amqp) {
+    function __construct($loop, $log, $amqp) {
         $this -> loop = $loop;
-        $this -> logger = $logger;
+        $this -> log = $log;
         $this -> amqp = $amqp;
         
         $th = $this;
@@ -45,7 +45,7 @@ class HttpServer {
                 }
             ) -> catch(
                 function(RPCException $e) use($th) {
-                    $th -> logger -> warn('Error during processing request: '.((string) $e));
+                    $th -> log -> warn('Error during processing request: '.((string) $e));
                     
                     if(DEBUG_MODE)
                         return new Response(
@@ -85,7 +85,7 @@ class HttpServer {
             );
         });
         
-        $this -> logger -> debug('Initialized HTTP server');
+        $this -> log -> debug('Initialized HTTP server');
     }
     
     public function start() {
@@ -101,7 +101,7 @@ class HttpServer {
                 
                 $this -> startTimer = null;
             } catch(Exception $e) {
-                $this -> logger -> error('Cannot start HTTP server: '.$e -> getMesssage());
+                $this -> log -> error('Cannot start HTTP server: '.$e -> getMesssage());
                 
                 $th = $this;
                 $this -> startTimer = $this -> loop -> addTimer(1000, function() use($th) {
@@ -112,7 +112,7 @@ class HttpServer {
             $this -> socket -> resume();
         }
         
-        $this -> logger -> info('Started HTTP server');
+        $this -> log -> info('Started HTTP server');
     }
     
     public function stop() {
@@ -123,7 +123,7 @@ class HttpServer {
             $this -> socket -> pause();
         }
         
-        $this -> logger -> warning('Stopped HTTP server');
+        $this -> log -> warning('Stopped HTTP server');
     }
 }
 
