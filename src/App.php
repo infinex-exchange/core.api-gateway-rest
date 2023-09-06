@@ -2,7 +2,7 @@
 
 require __DIR__.'/HttpServer.php';
 
-class App extends Infinex\Daemon {
+class App extends Infinex\App\Daemon {
     private $http;
     
     function __construct() {
