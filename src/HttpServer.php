@@ -107,6 +107,8 @@ class HttpServer {
                 $this -> startTimer = $this -> loop -> addTimer(1000, function() use($th) {
                     $th -> start();
                 });
+                
+                return;
             }
         } else {
             $this -> socket -> resume();
