@@ -19,10 +19,16 @@ class HttpServer {
         
         $th = $this;
         $this -> server = new React\Http\HttpServer(function (ServerRequestInterface $request) use ($th) {
-            $method = request -> getMethod();
+            $method = $request -> getMethod();
             $path = $request -> getUri() -> getPath();
             $query = $request -> getQueryParams();
             $body = json_decode($request -> getBody(), true);
+            
+            $token = null;
+            $auth = $request -> getHeaderLine('Authorization');
+            $auth = explode(' ', $auth);
+            if(count($auth) == 2 && strtolower($auth[0]) == 'bearer')
+                $auth = $auth[1];
                     
             return $th -> amqp -> call(
                 'api_auth',
@@ -31,6 +37,7 @@ class HttpServer {
                     'path' => $path,
                     'query' => $query,
                     'body' => $body,
+                    'token' => $token
                 ]
             ) -> then(
                 function($resp) use($th) {
