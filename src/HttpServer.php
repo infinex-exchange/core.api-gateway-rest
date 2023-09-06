@@ -97,7 +97,7 @@ class HttpServer {
                     $this -> loop
                 );
             
-                $this -> server -> listen($this -> server);
+                $this -> server -> listen($this -> socket);
                 
                 $this -> startTimer = null;
             } catch(Exception $e) {
