@@ -35,12 +35,12 @@ class HttpServer {
             ) -> then(
                 function($resp) use($th) {
                     return new Response(
-                        $resp -> status,
+                        $resp['status'],
                         [
                             'Content-Type' => 'application/json',
                             'Access-Control-Allow-Origin' => '*'
                         ],
-                        json_encode($resp -> body, JSON_PRETTY_PRINT)
+                        json_encode($resp['body'], JSON_PRETTY_PRINT)
                     );
                 }
             ) -> catch(
