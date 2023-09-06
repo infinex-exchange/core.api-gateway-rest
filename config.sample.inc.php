@@ -1,6 +1,7 @@
 <?php
 
 define('LOG_LEVEL', 0);
+define('DEBUG_MODE', false);
 
 define('RMQ_HOST', 'localhost');
 define('RMQ_PORT', 5672);

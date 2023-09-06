@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
+use Infinex\AMQP\RPCException;
 
 class HttpServer {
     private $loop;
@@ -45,19 +46,28 @@ class HttpServer {
                 }
             ) -> catch(
                 function(RPCException $e) use($th) {
+                    $th -> logger -> warn('Error during processing request: '.((string) $e));
+                    
+                    if(DEBUG_MODE)
+                        return new Response(
+                            500,
+                            [
+                                'Content-Type' => 'application/json',
+                                'Access-Control-Allow-Origin' => '*'
+                            ],
+                            json_encode(
+                                [
+                                    'error' => [
+                                        'code' => $e -> getStrCode(),
+                                        'msg' => $e -> getMessage(),
+                                    ]
+                                ],
+                                JSON_PRETTY_PRINT
+                            )
+                        );
+                        
                     return new Response(
-                        200,
-                        [
-                            'Content-Type' => 'application/json',
-                            'Access-Control-Allow-Origin' => '*'
-                        ],
-                        json_encode($obj, JSON_PRETTY_PRINT)
-                    );
-                }
-            ) -> catch(
-                function(RPCTimeout $e) use($th) {
-                    return new Response(
-                        504,
+                        500,
                         [
                             'Content-Type' => 'application/json',
                             'Access-Control-Allow-Origin' => '*'
@@ -65,8 +75,8 @@ class HttpServer {
                         json_encode(
                             [
                                 'error' => [
-                                    'code' => 'TIMEOUT',
-                                    'msg' => '',
+                                    'code' => 'INTERNAL_SERVER_ERROR',
+                                    'msg' => 'Internal server error',
                                 ]
                             ],
                             JSON_PRETTY_PRINT
@@ -99,21 +109,22 @@ class HttpServer {
                     $th -> start();
                 });
             }
-            
-            return;
+        } else {
+            $this -> socket -> resume();
         }
         
-        $this -> socket -> resume();
+        $this -> logger -> info('Started HTTP server');
     }
     
     public function stop() {
         if($this -> startTimer !== null) {
             $this -> loop -> cancelTimer($this -> startTimer);
             $this -> startTimer = null;
-            return;
+        } else {
+            $this -> socket -> pause();
         }
         
-        $this -> socket -> pause();
+        $this -> logger -> warning('Stopped HTTP server');
     }
 }
 
