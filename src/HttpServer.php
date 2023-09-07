@@ -12,6 +12,13 @@ class HttpServer {
     private $socket;
     private $startTimer;
     
+    const RESPONSE_HEADERS = [
+        'Content-Type' => 'application/json',
+        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Headers' => '*',
+        'Access-Control-Max-Age' => 86400
+    ];
+    
     function __construct($loop, $log, $amqp) {
         $this -> loop = $loop;
         $this -> log = $log;
@@ -43,11 +50,7 @@ class HttpServer {
                 function($resp) use($th) {
                     return new Response(
                         $resp['status'],
-                        [
-                            'Content-Type' => 'application/json',
-                            'Access-Control-Allow-Origin' => '*',
-                            'Access-Control-Allow-Headers' => '*'
-                        ],
+                        HttpServer::RESPONSE_HEADERS,
                         json_encode($resp['body'], JSON_PRETTY_PRINT)
                     );
                 }
@@ -58,11 +61,7 @@ class HttpServer {
                     if(DEBUG_MODE)
                         return new Response(
                             500,
-                            [
-                                'Content-Type' => 'application/json',
-                                'Access-Control-Allow-Origin' => '*',
-                                'Access-Control-Allow-Headers' => '*'
-                            ],
+                            HttpServer::RESPONSE_HEADERS,
                             json_encode(
                                 [
                                     'error' => [
@@ -76,11 +75,7 @@ class HttpServer {
                         
                     return new Response(
                         500,
-                        [
-                            'Content-Type' => 'application/json',
-                            'Access-Control-Allow-Origin' => '*',
-                            'Access-Control-Allow-Headers' => '*'
-                        ],
+                        HttpServer::RESPONSE_HEADERS,
                         json_encode(
                             [
                                 'error' => [
