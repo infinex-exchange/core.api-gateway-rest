@@ -13,7 +13,8 @@ class HttpServer {
     private $startTimer;
     
     const RESPONSE_HEADERS = [
-        'Content-Type' => 'application/json'
+        'Content-Type' => 'application/json',
+        'Access-Control-Allow-Origin' => '*'
     ];
     const PREFLIGHT_HEADERS = [
         'Access-Control-Allow-Origin' => '*',
