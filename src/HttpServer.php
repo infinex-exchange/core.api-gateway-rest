@@ -13,8 +13,11 @@ class HttpServer {
     private $startTimer;
     
     const RESPONSE_HEADERS = [
-        'Content-Type' => 'application/json',
+        'Content-Type' => 'application/json'
+    ];
+    const PREFLIGHT_HEADERS = [
         'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Methods' => '*',
         'Access-Control-Allow-Headers' => '*',
         'Access-Control-Max-Age' => 86400
     ];
@@ -27,6 +30,14 @@ class HttpServer {
         $th = $this;
         $this -> server = new React\Http\HttpServer(function (ServerRequestInterface $request) use ($th) {
             $method = $request -> getMethod();
+            
+            if($method == 'OPTIONS')
+                return new Response(
+                    200,
+                    HttpServer::PREFLIGHT_HEADERS,
+                    ''
+                );
+            
             $path = $request -> getUri() -> getPath();
             $query = $request -> getQueryParams();
             $body = json_decode($request -> getBody(), true);
