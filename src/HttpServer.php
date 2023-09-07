@@ -45,7 +45,8 @@ class HttpServer {
                         $resp['status'],
                         [
                             'Content-Type' => 'application/json',
-                            'Access-Control-Allow-Origin' => '*'
+                            'Access-Control-Allow-Origin' => '*',
+                            'Access-Control-Allow-Headers' => '*'
                         ],
                         json_encode($resp['body'], JSON_PRETTY_PRINT)
                     );
@@ -59,7 +60,8 @@ class HttpServer {
                             500,
                             [
                                 'Content-Type' => 'application/json',
-                                'Access-Control-Allow-Origin' => '*'
+                                'Access-Control-Allow-Origin' => '*',
+                                'Access-Control-Allow-Headers' => '*'
                             ],
                             json_encode(
                                 [
@@ -76,7 +78,8 @@ class HttpServer {
                         500,
                         [
                             'Content-Type' => 'application/json',
-                            'Access-Control-Allow-Origin' => '*'
+                            'Access-Control-Allow-Origin' => '*',
+                            'Access-Control-Allow-Headers' => '*'
                         ],
                         json_encode(
                             [
