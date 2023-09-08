@@ -68,7 +68,7 @@ class HttpServer {
                 }
             ) -> catch(
                 function(RPCException $e) use($th) {
-                    $th -> log -> warn('Error during processing request: '.((string) $e));
+                    $th -> log -> error("Error during processing request $method $path: ".((string) $e));
                     
                     if(DEBUG_MODE)
                         return new Response(
