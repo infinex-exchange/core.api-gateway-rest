@@ -63,7 +63,7 @@ class HttpServer {
                     return new Response(
                         $resp['status'],
                         HttpServer::RESPONSE_HEADERS,
-                        json_encode($resp['body'], JSON_PRETTY_PRINT)
+                        json_encode($resp['body'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
                     );
                 }
             ) -> catch(
@@ -81,7 +81,7 @@ class HttpServer {
                                         'msg' => $e -> getMessage(),
                                     ]
                                 ],
-                                JSON_PRETTY_PRINT
+                                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
                             )
                         );
                         
@@ -95,7 +95,7 @@ class HttpServer {
                                     'msg' => 'Internal server error',
                                 ]
                             ],
-                            JSON_PRETTY_PRINT
+                            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
                         )
                     );
                 }
