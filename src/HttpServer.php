@@ -56,7 +56,8 @@ class HttpServer {
                     'path' => $path,
                     'query' => $query,
                     'body' => $body,
-                    'apiKey' => $apiKey
+                    'apiKey' => $apiKey,
+                    'userAgent' => $request -> getHeaderLine('User-Agent')
                 ]
             ) -> then(
                 function($resp) use($th) {
