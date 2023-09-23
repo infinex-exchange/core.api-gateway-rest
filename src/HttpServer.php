@@ -95,7 +95,8 @@ class HttpServer {
             $request
         ) -> then(
             function($auth) use($th, $request, $method) {
-                $route = $th -> router -> route($request -> getUri() -> getPath());
+                $origPath = $request -> getUri() -> getPath();
+                $route = $th -> router -> route($origPath);
                 
                 return $th -> amqp -> call(
                     $route['module'],
@@ -107,7 +108,8 @@ class HttpServer {
                         'body' => json_decode($request -> getBody(), true),
                         'auth' => $auth,
                         'userAgent' => $request -> getHeaderLine('User-Agent'),
-                        'ip' => $request -> getHeaderLine('X-Forwarded-For')
+                        'ip' => $request -> getHeaderLine('X-Forwarded-For'),
+                        'origPath' => $origPath
                     ]
                 );
             }
