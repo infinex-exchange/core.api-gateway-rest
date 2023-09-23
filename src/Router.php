@@ -68,18 +68,28 @@ class Router {
     
     public function route($path) {
         $exploded = explode('/', $path);
-            
-        if(count($exploded) < 2 || !isset($this -> routes[ $exploded[1] ]))
-            throw new Error(404, 'INVALID_ENDPOINT', 'Invalid endpoint');
-            
-            $body['path'] = '/'.implode('/', array_slice($pathExploded, 2));
-            $target = $this -> routes[ $pathExploded[1] ];
-            
-            return [
-                'method' => $target,
-                'body' => $body
-            ];
+        array_shift($exploded);
+        
+        $routes = $this -> routes;
+        $service = null;
+        $path = '';
+        foreach($exploded as $part) {
+            if(isset($routes[$part])) {
+                if($routes[$part]['service']))
+                    $service = $routes[$part]['service'];
+                $routes = $routes[$part]['sub'];
+            }
+            else
+                $path .= '/'.$part;
         }
+            
+        if(!$service)
+            throw new Error('INVALID_ENDPOINT', 'Invalid endpoint', 404);
+        
+        return [
+            'service' => $service,
+            'path' => $path
+        ];
     }
 }
 

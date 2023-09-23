@@ -99,7 +99,7 @@ class HttpServer {
                 $route = $th -> router -> route($origPath);
                 
                 return $th -> amqp -> call(
-                    $route['module'],
+                    $route['service'],
                     'rest',
                     [
                         'method' => $method,
