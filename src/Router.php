@@ -38,21 +38,32 @@ class Router {
     private function reloadRoutes() {
         try {
             $tmpRoutes = [];
+            $count = 0;
             
             $q = $this -> pdo -> query('SELECT * FROM routes');
-            $count = 0;
+            
             while($row = $q -> fetch()) {    
-                $exploded = explode('/', $row['path'])
-                $count = count($exploded);
+                $exploded = explode('/', $row['path']);
+                $first = array_shift($exploded);
+                $expCount = count($exploded);
                 
-                if($count < 2 || $exploded[0] != '')) {
+                if($expCount == 0 || in_array('', $exploded) || $first != '') {
                     $this -> log -> warn('Ignoring invalid route: '.$row['path']);
                     continue;
                 }
                 
-                for($i = 1; $i < $count; $i++) {
-                    if(!isset($this -> routes[)
-                    $tmpRoutes[ $row['path'] ] = $row['module'];
+                $routes = &$tmpRoutes;
+                foreach($exploded as $k => $v) {
+                    if(!isset($routes[$v]))
+                        $routes[$v] = [
+                            'service' => null,
+                            'sub' => []
+                        ];
+                    
+                    if($k == $expCount - 1)
+                        $routes[$v]['service'] = $row['service'];
+                    
+                    $routes = &$routes[$v]['sub'];
                 }
                 
                 $count++;
