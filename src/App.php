@@ -2,15 +2,15 @@
 
 require __DIR__.'/HttpServer.php';
 
-class App extends Infinex\App\Daemon {
+class App extends Infinex\App\App {
     private $http;
     
     function __construct() {
-        parent::__construct('core.api-gateway');
+        $th = $this;
+        
+        parent::__construct('core.rest-api-gw');
         
         $this -> http = new HttpServer($this -> loop, $this -> log, $this -> amqp);
-        
-        $th = $this;
         $this -> amqp -> on('connect', function() use($th) {
             $th -> http -> start();
         });
