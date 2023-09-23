@@ -16,7 +16,14 @@ class App extends Infinex\App\App {
         
         parent::__construct('core.api-gateway-rest');
         
-        $this -> pdo = new Infinex\Database\PDO($this -> loop, $this -> log);
+        $this -> pdo = new Infinex\Database\PDO(
+            $this -> loop,
+            $this -> log,
+            DB_HOST,
+            DB_USER,
+            DB_PASS,
+            DB_NAME
+        );
         
         $this -> auth = new Authenticator($this -> log, $this -> amqp);
         
@@ -26,7 +33,9 @@ class App extends Infinex\App\App {
             $this -> loop,
             $this -> log,
             $this -> auth,
-            $this -> router
+            $this -> router,
+            HTTP_BIND_ADDR,
+            HTTP_BIND_PORT
         );
         
         $this -> cs = new Infinex\App\ConditionalStart(

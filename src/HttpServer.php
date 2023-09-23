@@ -8,6 +8,8 @@ class HttpServer {
     private $log;
     private $auth;
     private $router;
+    private $bindAddr;
+    private $bindPort;
     private $server;
     private $socket;
     private $startTimer;
@@ -23,13 +25,22 @@ class HttpServer {
         'Access-Control-Max-Age' => 86400
     ];
     
-    function __construct($loop, $log, $auth, $outer) {
+    function __construct(
+        $loop,
+        $log,
+        $auth,
+        $router,
+        $bindAddr,
+        $bindPort
+    ) {
         $th = $this;
         
         $this -> loop = $loop;
         $this -> log = $log;
         $this -> auth = $auth;
         $this -> router = $router;
+        $this -> bindAddr = $bindAddr;
+        $this -> bindPort = $bindPort;
         
         $this -> server = new React\Http\HttpServer(function($request) use ($th) {
             return $th -> request($request);
@@ -44,7 +55,7 @@ class HttpServer {
         if($this -> socket === null) {
             try {
                 $this -> socket = new React\Socket\SocketServer(
-                    HTTP_BIND_ADDR.':'.HTTP_BIND_PORT,
+                    $this -> bindAddr.':'.$this -> bindPort,
                     [],
                     $this -> loop
                 );
