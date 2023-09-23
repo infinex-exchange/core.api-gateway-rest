@@ -6,7 +6,8 @@ use React\Http\Message\Response;
 class HttpServer {
     private $loop;
     private $log;
-    private $amqp;
+    private $auth;
+    private $router;
     private $server;
     private $socket;
     private $startTimer;
@@ -22,12 +23,13 @@ class HttpServer {
         'Access-Control-Max-Age' => 86400
     ];
     
-    function __construct($loop, $log, $amqp) {
+    function __construct($loop, $log, $auth, $outer) {
         $th = $this;
         
         $this -> loop = $loop;
         $this -> log = $log;
-        $this -> amqp = $amqp;
+        $this -> auth = $auth;
+        $this -> router = $router;
         
         $this -> server = new React\Http\HttpServer(function($request) use ($th) {
             return $th -> request($request);
@@ -78,6 +80,8 @@ class HttpServer {
     }
     
     private function request($request) {
+        $th = $this;
+        
         $method = $request -> getMethod();
         
         if($method == 'OPTIONS')
@@ -87,28 +91,26 @@ class HttpServer {
                 ''
             );
         
-        $path = $request -> getUri() -> getPath();
-        $query = $request -> getQueryParams();
-        $body = json_decode($request -> getBody(), true);
-        
-        $apiKey = null;
-        $auth = $request -> getHeaderLine('Authorization');
-        $auth = explode(' ', $auth);
-        if(count($auth) == 2 && strtolower($auth[0]) == 'bearer')
-            $apiKey = $auth[1];
+        return $this -> auth -> authenticate(
+            $request
+        ) -> then(
+            function($auth) use($th, $request, $method) {
+                $route = $th -> router -> route($request -> getUri() -> getPath());
                 
-        return $th -> amqp -> call(
-            'auth.rest-api-auth',
-            'rest',
-            [
-                'method' => $method,
-                'path' => $path,
-                'query' => $query,
-                'body' => $body,
-                'apiKey' => $apiKey,
-                'userAgent' => $request -> getHeaderLine('User-Agent'),
-                'ip' => $request -> getHeaderLine('X-Forwarded-For')
-            ]
+                return $th -> amqp -> call(
+                    $route['module'],
+                    'rest',
+                    [
+                        'method' => $method,
+                        'path' => $route['path'],
+                        'query' => $request -> getQueryParams(),
+                        'body' => json_decode($request -> getBody(), true),
+                        'auth' => $auth,
+                        'userAgent' => $request -> getHeaderLine('User-Agent'),
+                        'ip' => $request -> getHeaderLine('X-Forwarded-For')
+                    ]
+                );
+            }
         ) -> then(
             function($resp) use($th) {
                 return new Response(
@@ -118,7 +120,7 @@ class HttpServer {
                 );
             }
         ) -> catch(
-            function($e) use($th, $method, $path) {
+            function($e) {
                 $status = 500;
                 $code = 'INTERNAL_SERVER_ERROR';
                 $msg = 'Internal server error';

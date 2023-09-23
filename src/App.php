@@ -1,23 +1,58 @@
 <?php
 
 require __DIR__.'/HttpServer.php';
+require __DIR__.'/Authenticator.php';
+require __DIR__.'Router.php';
 
 class App extends Infinex\App\App {
+    private $pdo;
     private $http;
+    private $cs;
+    private $auth;
+    private $router;
     
     function __construct() {
         $th = $this;
         
-        parent::__construct('core.rest-api-gw');
+        parent::__construct('core.api-gateway-rest');
         
-        $this -> http = new HttpServer($this -> loop, $this -> log, $this -> amqp);
-        $this -> amqp -> on('connect', function() use($th) {
-            $th -> http -> start();
-        });
+        $this -> pdo = new Infinex\Database\PDO($this -> loop, $this -> log);
         
-        $this -> amqp -> on('disconnect', function() use($th) {
-            $th -> http -> stop();
-        });
+        $this -> auth = new Authenticator($this -> log, $this -> amqp);
+        
+        $this -> router = new Router($this -> loop, $this -> log, $this -> pdo);
+        
+        $this -> http = new HttpServer(
+            $this -> loop,
+            $this -> log,
+            $this -> auth,
+            $this -> router
+        );
+        
+        $this -> cs = new Infinex\App\ConditionalStart(
+            $this -> loop,
+            $this -> log,
+            [
+                $this -> amqp,
+                $this -> pdo
+            ],
+            [
+                $this -> http,
+                $this -> router
+            ]
+        );
+    }
+    
+    function start() {
+        parent::start();
+        $this -> pdo -> start();
+        $this -> cs -> start();
+    }
+    
+    function stop() {
+        $this -> cs -> stop();
+        $this -> pdo -> stop();
+        parent::stop();
     }
 }
 
