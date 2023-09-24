@@ -86,7 +86,7 @@ class Router {
         $path = '';
         foreach($exploded as $part) {
             if(isset($routes[$part])) {
-                if($routes[$part]['service']))
+                if($routes[$part]['service'])
                     $service = $routes[$part]['service'];
                 $routes = $routes[$part]['sub'];
             }
