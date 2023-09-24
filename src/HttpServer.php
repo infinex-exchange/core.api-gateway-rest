@@ -139,7 +139,7 @@ class HttpServer {
                 $msg = 'Internal server error';
                 
                 if($e instanceof Error) {
-                    if($e -> getCode()))
+                    if($e -> getCode())
                         $status = $e -> getCode();
                     if($e -> getCode() || DEBUG_MODE) {
                         $code = $e -> getStrCode();
