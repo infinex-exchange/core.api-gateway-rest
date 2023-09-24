@@ -64,7 +64,7 @@ class HttpServer {
                 
                 $this -> startTimer = null;
             } catch(Exception $e) {
-                $this -> log -> error('Cannot start HTTP server: '.((string) $e);
+                $this -> log -> error('Cannot start HTTP server: '.((string) $e));
                 
                 $this -> startTimer = $this -> loop -> addTimer(1, function() use($th) {
                     $th -> start();
