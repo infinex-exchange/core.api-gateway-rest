@@ -87,7 +87,7 @@ class HttpServer {
             $this -> socket -> pause();
         }
         
-        $this -> log -> warn('Stopped HTTP server');
+        $this -> log -> info('Stopped HTTP server');
     }
     
     private function request($request) {
