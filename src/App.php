@@ -2,7 +2,7 @@
 
 require __DIR__.'/HttpServer.php';
 require __DIR__.'/Authenticator.php';
-require __DIR__.'Router.php';
+require __DIR__.'/Router.php';
 
 class App extends Infinex\App\App {
     private $pdo;
