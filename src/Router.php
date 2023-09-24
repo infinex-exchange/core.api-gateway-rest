@@ -12,6 +12,7 @@ class Router {
     function __construct($loop, $log, $pdo) {
         $this -> loop = $loop;
         $this -> log = $log;
+        $this -> pdo = $pdo;
 
         $this -> log -> debug('Initialized API router');
     }
