@@ -63,7 +63,7 @@ class App extends Infinex\App\App {
         
         $this -> cs -> stop() -> then(
             function() use($th) {
-                return $this -> pdo -> stop();
+                return $th -> pdo -> stop();
             }
         ) -> then(
             function() use($th) {
