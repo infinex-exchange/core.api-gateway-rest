@@ -2,6 +2,7 @@
 
 use Infinex\Exceptions\Error;
 use React\Http\Message\Response;
+use React\Promise;
 
 class HttpServer {
     private $loop;
@@ -91,6 +92,7 @@ class HttpServer {
         }
         
         $this -> log -> info('Stopped HTTP server');
+        return Promise\resolve(null);
     }
     
     private function request($request) {
