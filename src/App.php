@@ -52,15 +52,27 @@ class App extends Infinex\App\App {
         );
     }
     
-    function start() {
+    public function start() {
         parent::start();
         $this -> pdo -> start();
         $this -> cs -> start();
     }
     
-    function stop() {
-        $this -> cs -> stop();
-        $this -> pdo -> stop();
+    public function stop() {
+        $th = $this;
+        
+        $this -> cs -> stop() -> then(
+            function() use($th) {
+                return $this -> pdo -> stop();
+            }
+        ) -> then(
+            function() use($th) {
+                $th -> parentStop();
+            }
+        );
+    }
+    
+    private function parentStop() {
         parent::stop();
     }
 }
