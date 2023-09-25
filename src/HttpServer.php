@@ -6,6 +6,7 @@ use React\Http\Message\Response;
 class HttpServer {
     private $loop;
     private $log;
+    private $amqp;
     private $auth;
     private $router;
     private $bindAddr;
@@ -28,6 +29,7 @@ class HttpServer {
     function __construct(
         $loop,
         $log,
+        $amqp,
         $auth,
         $router,
         $bindAddr,
@@ -37,6 +39,7 @@ class HttpServer {
         
         $this -> loop = $loop;
         $this -> log = $log;
+        $this -> amqp = $amqp;
         $this -> auth = $auth;
         $this -> router = $router;
         $this -> bindAddr = $bindAddr;

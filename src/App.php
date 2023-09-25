@@ -32,6 +32,7 @@ class App extends Infinex\App\App {
         $this -> http = new HttpServer(
             $this -> loop,
             $this -> log,
+            $this -> amqp,
             $this -> auth,
             $this -> router,
             HTTP_BIND_ADDR,
