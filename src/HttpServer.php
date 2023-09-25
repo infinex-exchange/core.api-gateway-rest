@@ -16,6 +16,7 @@ class HttpServer {
     
     private $server;
     private $socket;
+    private $startDeferred;
     private $startTimer;
     
     const RESPONSE_HEADERS = [
@@ -57,45 +58,49 @@ class HttpServer {
     }
     
     public function start() {
-        $th = $this;
+        if($this -> startDeferred !== null)
+            return $this -> startDeferred -> promise();
         
-        if($this -> socket === null) {
-            try {
-                $this -> socket = new React\Socket\SocketServer(
-                    $this -> bindAddr.':'.$this -> bindPort,
-                    [],
-                    $this -> loop
-                );
-            
-                $this -> server -> listen($this -> socket);
-                
-                $this -> startTimer = null;
-            } catch(Exception $e) {
-                $this -> log -> error('Cannot start HTTP server: '.((string) $e));
-                
-                $this -> startTimer = $this -> loop -> addTimer(1, function() use($th) {
-                    $th -> start();
-                });
-                
-                return;
-            }
-        } else {
-            $this -> socket -> resume();
-        }
-        
-        $this -> log -> info('Started HTTP server');
+        $this -> startDeferred = new Promise\Deferred();
+        $this -> listen();
+        return $this -> startDeferred -> promise();
     }
     
     public function stop() {
+        $th = $this;
+        
         if($this -> startTimer !== null) {
             $this -> loop -> cancelTimer($this -> startTimer);
-            $this -> startTimer = null;
-        } else {
-            $this -> socket -> pause();
+            return Promise\resolve(null);
         }
         
+        $this -> socket -> pause();
         $this -> log -> info('Stopped HTTP server');
         return Promise\resolve(null);
+    }
+    
+    private function listen() {
+        $this -> startTimer = null;
+        
+        try {
+            $this -> socket = new React\Socket\SocketServer(
+                $this -> bindAddr.':'.$this -> bindPort,
+                [],
+                $this -> loop
+            );
+            
+            $this -> server -> listen($this -> socket);
+            
+            $this -> log -> info('Started HTTP server');
+            
+            $this -> startDeferred -> resolve(null);
+        } catch(\Exception $e) {
+            $this -> log -> error('Cannot start HTTP server: '.((string) $e));
+                
+            $this -> startTimer = $this -> loop -> addTimer(1, function() use($th) {
+                $th -> listen();
+            });
+        }
     }
     
     private function request($request) {
