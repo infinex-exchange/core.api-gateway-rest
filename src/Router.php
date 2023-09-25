@@ -1,11 +1,13 @@
 <?php
 
 use Infinex\Exceptions\Error;
+use React\Promise;
 
 class Router {
     private $loop;
     private $log;
     private $pdo;
+    
     private $routes;
     private $refreshTimer;
     
@@ -29,11 +31,14 @@ class Router {
         $this -> reloadRoutes();
         
         $this -> log -> info('Started API router');
+        
+        return Promise\resolve(null);
     }
     
     public function stop() {
         $this -> loop -> cancelTimer($this -> refreshTimer);
         $this -> log -> info('Stopped API router');
+        return Promise\resolve(null);
     }
     
     private function reloadRoutes() {

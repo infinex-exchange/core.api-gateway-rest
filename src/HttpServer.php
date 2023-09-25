@@ -10,8 +10,10 @@ class HttpServer {
     private $amqp;
     private $auth;
     private $router;
+    
     private $bindAddr;
     private $bindPort;
+    
     private $server;
     private $socket;
     private $startTimer;
@@ -43,6 +45,7 @@ class HttpServer {
         $this -> amqp = $amqp;
         $this -> auth = $auth;
         $this -> router = $router;
+        
         $this -> bindAddr = $bindAddr;
         $this -> bindPort = $bindPort;
         

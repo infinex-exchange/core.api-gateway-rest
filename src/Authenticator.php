@@ -1,6 +1,7 @@
 <?php
 
 use Infinex\Exceptions\Error;
+use React\Promise;
 
 class Authenticator {
     private $log;
@@ -13,16 +14,25 @@ class Authenticator {
         $this -> log -> debug('Initialized API authenticator');
     }
     
+    public function start() {
+        $this -> log -> info('Started API authenticator');
+        return Promise\resolve(null);
+    }
+    
+    public function stop() {
+        $this -> log -> info('Stopped API authenticator');
+        return Promise\resolve(null);
+    }
     
     public function authenticate($request) {
         $header = $request -> getHeaderLine('Authorization');
         $exploded = explode(' ', $header);
         if(count($exploded) != 2 || strtolower($exploded[0]) != 'bearer')
-            return React\Promise\resolve(null);
+            return Promise\resolve(null);
         $apiKey = $exploded[1];
         
         if(!$this -> validateApiKey($apiKey))
-            return React\Promise\reject(
+            return Promise\reject(
                 new Error('VALIDATION_ERROR', 'Invalid API key format', 400)
             );
         

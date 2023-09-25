@@ -4,10 +4,11 @@ require __DIR__.'/HttpServer.php';
 require __DIR__.'/Authenticator.php';
 require __DIR__.'/Router.php';
 
+use React\Promise;
+
 class App extends Infinex\App\App {
     private $pdo;
     private $http;
-    private $cs;
     private $auth;
     private $router;
     
@@ -36,31 +37,44 @@ class App extends Infinex\App\App {
             HTTP_BIND_ADDR,
             HTTP_BIND_PORT
         );
-        
-        $this -> cs = new Infinex\App\ConditionalStart(
-            $this -> loop,
-            $this -> log,
-            [
-                $this -> amqp,
-                $this -> pdo
-            ],
-            [
-                $this -> http,
-                $this -> router
-            ]
-        );
     }
     
     public function start() {
-        parent::start();
-        $this -> pdo -> start();
-        $this -> cs -> start();
+        $th = $this;
+        
+        parent::start() -> then(
+            function() use($th) {
+                return $th -> pdo -> start();
+            }
+        ) -> then(
+            function() use($th) {
+                return Promise\all([
+                    $th -> auth -> start(),
+                    $th -> router -> start()
+                ]);
+            }
+        ) -> then(
+            function() use($th) {
+                return $th -> http -> start();
+            }
+        ) -> catch(
+            function($e) {
+                $th -> log -> error('Failed start app: '.((string) $e));
+            }
+        );
     }
     
     public function stop() {
         $th = $this;
         
-        $this -> cs -> stop() -> then(
+        $this -> http -> stop() -> then(
+            function() use($th) {
+                return Promise\all([
+                    $th -> auth -> stop(),
+                    $th -> router -> stop()
+                ]);
+            }
+        ) -> then(
             function() use($th) {
                 return $th -> pdo -> stop();
             }
