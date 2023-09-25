@@ -12,8 +12,6 @@ class App extends Infinex\App\App {
     private $router;
     
     function __construct() {
-        $th = $this;
-        
         parent::__construct('core.api-gateway-rest');
         
         $this -> pdo = new Infinex\Database\PDO(
