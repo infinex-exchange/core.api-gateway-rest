@@ -31,20 +31,11 @@ class Authenticator {
             return Promise\resolve(null);
         $apiKey = $exploded[1];
         
-        if(!$this -> validateApiKey($apiKey))
-            return Promise\reject(
-                new Error('VALIDATION_ERROR', 'Invalid API key format', 400)
-            );
-        
         return $this -> amqp -> call(
-            'auth',
+            'account.accountd',
             'checkApiKey',
             [ 'apiKey' => $apiKey ]
         );
-    }
-    
-    private function validateApiKey($apiKey) {
-        return preg_match('/^[a-f0-9]{64}$/', $apiKey);
     }
 }
 
