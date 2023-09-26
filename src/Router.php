@@ -99,6 +99,8 @@ class Router {
             else
                 $path .= '/'.$part;
         }
+        if($path == '')
+            $path = '/';
             
         if(!$service)
             throw new Error('INVALID_ENDPOINT', 'Invalid endpoint', 404);
