@@ -122,13 +122,20 @@ class HttpServer {
                 $origPath = $request -> getUri() -> getPath();
                 $route = $th -> router -> route($origPath);
                 
+                $query = $request -> getQueryParams();
+                foreach($query as $k => $v) {
+                    $intVal = filter_var($v, FILTER_VALIDATE_INT);
+                    if($intVal !== false)
+                        $query[$k] = $intVal;
+                }
+                
                 return $th -> amqp -> call(
                     $route['service'],
                     'rest',
                     [
                         'method' => $method,
                         'path' => $route['path'],
-                        'query' => $request -> getQueryParams(),
+                        'query' => $query,
                         'body' => json_decode($request -> getBody(), true),
                         'auth' => $auth,
                         'userAgent' => $request -> getHeaderLine('User-Agent'),
