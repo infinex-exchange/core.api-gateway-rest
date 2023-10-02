@@ -1,4 +1,5 @@
 insert into routes(path, service) values
+
     ('/account', 'temp.legacy-api'),
     ('/wallet', 'temp.legacy-api'),
     ('/spot', 'temp.legacy-api'),
@@ -9,6 +10,7 @@ insert into routes(path, service) values
     ('/nft', 'temp.legacy-api'),
     ('/gamble', 'temp.legacy-api'),
     ('/ipc', 'temp.legacy-api'),
-    ('/v2/account', 'account.accountd'),
-    ('/v2/affiliate', 'affiliate.affiliate'),
-    ('/v2/wallet', 'wallet.wallet');
+    
+    ('/account/v2', 'account.accountd'),
+    ('/affiliate/v2', 'affiliate.affiliate'),
+    ('/wallet/v2', 'wallet.wallet');
