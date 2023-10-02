@@ -10,4 +10,5 @@ insert into routes(path, service) values
     ('/gamble', 'temp.legacy-api'),
     ('/ipc', 'temp.legacy-api'),
     ('/v2/account', 'account.accountd'),
-    ('/v2/affiliate', 'affiliate.affiliate');
+    ('/v2/affiliate', 'affiliate.affiliate'),
+    ('/v2/wallet', 'wallet.wallet');
