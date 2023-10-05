@@ -32,7 +32,7 @@ class Authenticator {
         $apiKey = $exploded[1];
         
         return $this -> amqp -> call(
-            'account.accountd',
+            'account.account',
             'checkApiKey',
             [ 'apiKey' => $apiKey ]
         );
