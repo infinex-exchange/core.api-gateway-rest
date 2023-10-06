@@ -79,7 +79,7 @@ class Router {
             }
             
             $this -> routes = $tmpRoutes;
-            var_dump($this -> routes);
+            echo json_encode($this -> routes, JSON_PRETTY_PRINT);
             $this -> log -> info("Reloaded $count routes from database");
         }
         catch(\Exception $e) {
