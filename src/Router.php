@@ -116,7 +116,7 @@ class Router {
                     $broken = true;
             }
             
-            if($broken && !$service)
+            else if(!$service)
                 break;
                 
             $path .= '/'.$part;
