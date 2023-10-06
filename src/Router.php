@@ -113,7 +113,7 @@ class Router {
                     $broken = true;
             }
             
-            if($broken) {
+            else {
                 if(!$service)
                     break;
                 
