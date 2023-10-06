@@ -69,11 +69,12 @@ class Router {
                     if($k == $expCount - 1 && $v == '')
                         $routes['service'] = $row['service'];
                         
-                    else if(!isset($routes['sub'][$v])) {
-                        $routes['sub'][$v] = [
-                            'service' => null,
-                            'sub' => []
-                        ];
+                    else {
+                        if(!isset($routes['sub'][$v]))
+                            $routes['sub'][$v] = [
+                                'service' => null,
+                                'sub' => []
+                            ];
                         $routes = &$routes['sub'][$v];
                     }
                 }
