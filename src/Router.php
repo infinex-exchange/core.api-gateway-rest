@@ -100,18 +100,25 @@ class Router {
         $routes = $this -> routes;
         $service = null;
         $path = null;
+        $broken = false;
         foreach($exploded as $part) {
-            if($routes['service']) {
-                $service = $routes['service'];
-                $path = '';
+            if(!$broken) {
+                if($routes['service']) {
+                    $service = $routes['service'];
+                    $path = '';
+                }
+                
+                if(isset($routes['sub'][$part]))
+                    $routes = $routes['sub'][$part];
+                else
+                    $broken = true;
             }
             
-            if(isset($routes['sub'][$part]))
-                $routes = $routes['sub'][$part];
-            else if(!$service)
+            if($broken && !$service)
                 break;
             
-            $path .= '/'.$part;
+            else
+                $path .= '/'.$part;
         }
         var_dump($service);
         var_dump($path);
