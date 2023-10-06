@@ -106,14 +106,12 @@ class Router {
                 $path .= '/';
             }
             
-            if(isset($routes['sub'][$part])) {
+            if(isset($routes['sub'][$part]))
                 $routes = $routes['sub'][$part];
-            } else {
-                if(!$service)
-                    break;
-                
-                $path .= $part;
-            }
+            else if(!$service)
+                break;
+            
+            $path .= $part;
         }
         var_dump($service);
         var_dump($path);
