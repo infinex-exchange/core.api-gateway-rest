@@ -61,6 +61,9 @@ class Router {
                     continue;
                 }
                 
+                if($exploded[$expCount-1] != '')
+                    $exploded[] = '';
+                
                 $routes = &$tmpRoutes;
                 foreach($exploded as $k => $v) {
                     if($v != '' && !isset($routes['sub'][$v]))
