@@ -101,6 +101,8 @@ class Router {
         $path = null;
         $broken = false;
         foreach($exploded as $part) {
+            echo "PROCESSING PART: ";
+            var_dump($part);
             if(!$broken) {
                 if($routes['service']) {
                     $service = $routes['service'];
