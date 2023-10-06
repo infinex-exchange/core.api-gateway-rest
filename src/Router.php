@@ -66,16 +66,16 @@ class Router {
                 
                 $routes = &$tmpRoutes;
                 foreach($exploded as $k => $v) {
-                    if($v != '' && !isset($routes['sub'][$v]))
+                    if($k == $expCount - 1 && $v == '')
+                        $routes['service'] = $row['service'];
+                        
+                    else if(!isset($routes['sub'][$v])) {
                         $routes['sub'][$v] = [
                             'service' => null,
                             'sub' => []
                         ];
-                    
-                    if($k == $expCount - 1)
-                        $routes['service'] = $row['service'];
-                    
-                    $routes = &$routes['sub'][$v];
+                        $routes = &$routes['sub'][$v];
+                    }
                 }
                 
                 $count++;
