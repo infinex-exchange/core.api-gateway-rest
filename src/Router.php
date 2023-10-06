@@ -101,14 +101,14 @@ class Router {
         $path = null;
         $broken = false;
         foreach($exploded as $part) {
-            echo "PROCESSING PART: ";
-            var_dump($part);
+            echo "PROCESSING PART: |$part|";
             if(!$broken) {
                 echo "Not broken\n";
                 if($routes['service']) {
+                    echo "Found service\n";
                     $service = $routes['service'];
                     $path = '';
-                }
+                } else echo "Not found service\n";
                 
                 if(isset($routes['sub'][$part]))
                     $routes = $routes['sub'][$part];
