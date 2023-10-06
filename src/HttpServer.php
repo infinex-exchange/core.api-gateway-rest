@@ -139,8 +139,7 @@ class HttpServer {
                         'body' => json_decode($request -> getBody(), true),
                         'auth' => $auth,
                         'userAgent' => $request -> getHeaderLine('User-Agent'),
-                        'ip' => $request -> getHeaderLine('X-Forwarded-For'),
-                        'origPath' => $origPath
+                        'ip' => $request -> getHeaderLine('X-Forwarded-For')
                     ]
                 );
             }
