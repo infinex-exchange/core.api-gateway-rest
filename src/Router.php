@@ -96,8 +96,10 @@ class Router {
                     $service = $routes[$part]['service'];
                 $routes = $routes[$part]['sub'];
             }
-            else
+            else {
                 $path .= '/'.$part;
+                $routes = null;
+            }
         }
         if($path == '')
             $path = '/';
