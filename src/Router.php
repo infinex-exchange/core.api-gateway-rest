@@ -99,11 +99,11 @@ class Router {
         
         $routes = $this -> routes;
         $service = null;
-        $path = '';
+        $path = null;
         foreach($exploded as $part) {
             if($routes['service']) {
                 $service = $routes['service'];
-                $path .= '/';
+                $path = '';
             }
             
             if(isset($routes['sub'][$part]))
@@ -111,7 +111,7 @@ class Router {
             else if(!$service)
                 break;
             
-            $path .= $part;
+            $path .= '/'.$part;
         }
         var_dump($service);
         var_dump($path);
