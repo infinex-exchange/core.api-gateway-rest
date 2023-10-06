@@ -43,7 +43,10 @@ class Router {
     
     private function reloadRoutes() {
         try {
-            $tmpRoutes = [];
+            $tmpRoutes = [
+                'service' => null,
+                'sub' = []
+            ];
             $count = 0;
             
             $q = $this -> pdo -> query('SELECT * FROM routes');
@@ -60,16 +63,16 @@ class Router {
                 
                 $routes = &$tmpRoutes;
                 foreach($exploded as $k => $v) {
-                    if(!isset($routes[$v]))
-                        $routes[$v] = [
+                    if(!isset($routes['sub'][$v]))
+                        $routes['sub'][$v] = [
                             'service' => null,
                             'sub' => []
                         ];
                     
                     if($k == $expCount - 1)
-                        $routes[$v]['service'] = $row['service'];
+                        $routes['service'] = $row['service'];
                     
-                    $routes = &$routes[$v]['sub'];
+                    $routes = &$routes['sub'][$v];
                 }
                 
                 $count++;
