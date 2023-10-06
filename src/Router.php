@@ -45,7 +45,7 @@ class Router {
         try {
             $tmpRoutes = [
                 'service' => null,
-                'sub' = []
+                'sub' => []
             ];
             $count = 0;
             
