@@ -104,6 +104,7 @@ class Router {
             echo "PROCESSING PART: ";
             var_dump($part);
             if(!$broken) {
+                echo "Not broken\n";
                 if($routes['service']) {
                     $service = $routes['service'];
                     $path = '';
@@ -116,6 +117,7 @@ class Router {
             }
             
             if($broken) {
+                echo "Broken\n";
                 if(!$service)
                     break;
                 
