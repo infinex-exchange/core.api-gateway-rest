@@ -53,7 +53,7 @@ class Router {
                 $first = array_shift($exploded);
                 $expCount = count($exploded);
                 
-                if($expCount == 0 || in_array('', $exploded) || $first != '') {
+                if($expCount == 0 || $first != '') {
                     $this -> log -> warn('Ignoring invalid route: '.$row['path']);
                     continue;
                 }
@@ -76,6 +76,7 @@ class Router {
             }
             
             $this -> routes = $tmpRoutes;
+            var_dump($this -> routes);
             $this -> log -> info("Reloaded $count routes from database");
         }
         catch(\Exception $e) {
@@ -103,6 +104,8 @@ class Router {
         }
         if($path == '')
             $path = '/';
+        var_dump($service);
+        var_dump($path);
             
         if(!$service)
             throw new Error('INVALID_ENDPOINT', 'Invalid endpoint', 404);
