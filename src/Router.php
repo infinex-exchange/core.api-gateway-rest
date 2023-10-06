@@ -63,7 +63,7 @@ class Router {
                 
                 $routes = &$tmpRoutes;
                 foreach($exploded as $k => $v) {
-                    if(!isset($routes['sub'][$v]))
+                    if($v != '' && !isset($routes['sub'][$v]))
                         $routes['sub'][$v] = [
                             'service' => null,
                             'sub' => []
