@@ -85,7 +85,6 @@ class Router {
             }
             
             $this -> routes = $tmpRoutes;
-            echo json_encode($this -> routes, JSON_PRETTY_PRINT);
             $this -> log -> info("Reloaded $count routes from database");
         }
         catch(\Exception $e) {
@@ -120,8 +119,6 @@ class Router {
             else
                 $path .= '/'.$part;
         }
-        var_dump($service);
-        var_dump($path);
             
         if(!$service)
             throw new Error('INVALID_ENDPOINT', 'Invalid endpoint', 404);
