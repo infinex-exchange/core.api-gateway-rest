@@ -105,7 +105,7 @@ class Router {
             if(!$broken) {
                 echo "Not broken\n";
                 if(isset($routes['service'])) {
-                    echo "Set service\n";
+                    echo "Set service ".$routes['service']."\n";
                     $service = $routes['service'];
                     $path = '';
                 } else echo "Not found service\n";
