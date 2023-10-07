@@ -101,7 +101,9 @@ class Router {
         $path = null;
         $broken = false;
         foreach($exploded as $part) {
+            echo "Part: $part\n";
             if(!$broken) {
+                echo "Not broken\n";
                 if(isset($routes['service'])) {
                     $service = $routes['service'];
                     $path = '/'.$part;
@@ -113,9 +115,11 @@ class Router {
                     $broken = true;
             }
             else if($service) {
+                echo "Broken but service\n";
                 $path .= '/'.$part;
             }
             else {
+                echo "Broken and no service\n";
                 break;
             }
         }
