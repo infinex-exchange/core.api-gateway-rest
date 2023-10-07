@@ -124,8 +124,7 @@ class Router {
         
         if(!$service)
             throw new Error('INVALID_ENDPOINT', 'Invalid endpoint', 404);
-        var_dump($service);
-        var_dump($path);
+
         return [
             'service' => $service,
             'path' => $path
