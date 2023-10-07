@@ -113,11 +113,12 @@ class Router {
                 else
                     $broken = true;
             }
-            
-            $path .= '/'.$part;
-            
-            if($broken && !$service)
-                break;
+            else {
+                if(!$service)
+                    break;
+                
+                $path .= '/'.$part;
+            }
         }
         
         if(!$service)
