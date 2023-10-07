@@ -101,29 +101,39 @@ class Router {
         $path = null;
         $broken = false;
         foreach($exploded as $part) {
+            echo "Processing |$part|\n";
             if(!$broken) {
+                echo "Not broken\n";
                 if(isset($routes['service'])) {
+                    echo "Set service\n";
                     $service = $routes['service'];
                     $path = '';
-                }
+                } else echo "Not found service\n";
                 
-                if(isset($routes['sub'][$part]))
+                if(isset($routes['sub'][$part])) {
                     $routes = $routes['sub'][$part];
-                else
+                    echo "Recursion\n";
+                }
+                else {
                     $broken = true;
-            }
+                    echo "No recursion\n";
+                }
+            }else echo "Broken\n";
             
             $path .= '/'.$part;
             
-            if($broken && !$service)
+            if($broken && !$service) {
+                echo "Breaking\n";
                 break;
+            }
         }
         if($path == '')
             $path = '/';
         
         if(!$service)
             throw new Error('INVALID_ENDPOINT', 'Invalid endpoint', 404);
-
+        var_dump($service);
+        var_dump($path);
         return [
             'service' => $service,
             'path' => $path
