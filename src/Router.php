@@ -68,7 +68,7 @@ class Router {
                 
                 $routes = &$tmpRoutes;
                 foreach($exploded as $k => $v) {
-                    if($k == $expCount - 1 && $v == '')
+                    if($k == $expCount - 1)
                         $routes['service'] = $row['service'];
                         
                     else {
@@ -101,27 +101,23 @@ class Router {
         $path = null;
         $broken = false;
         foreach($exploded as $part) {
-            echo "PROCESSING PART: |$part|";
             if(!$broken) {
-                echo "Not broken\n";
-                if($routes['service']) {
-                    echo "Found service\n";
+                if(isset($routes['service'])) {
                     $service = $routes['service'];
-                    $path = '';
-                } else echo "Not found service\n";
+                    $path = '/'.$part;
+                }
                 
                 if(isset($routes['sub'][$part]))
                     $routes = $routes['sub'][$part];
                 else
                     $broken = true;
             }
-            
-            else if(!$service)
+            else if($service) {
+                $path .= '/'.$part;
+            }
+            else {
                 break;
-                
-            $path .= '/'.$part;
-            echo "Path is";
-            var_dump($path);
+            }
         }
             
         if(!$service)
