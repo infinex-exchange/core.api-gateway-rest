@@ -101,6 +101,8 @@ class Router {
         $path = '';
         $broken = false;
         foreach($exploded as $part) {
+            $path .= '/'.$part;
+            
             if(!$broken) {
                 if(isset($routes['sub'][$part])) {
                     $routes = $routes['sub'][$part];
@@ -113,12 +115,9 @@ class Router {
                 else
                     $broken = true;
             }
-            if($broken) {
-                if(!$service)
-                    break;
-                
-                $path .= '/'.$part;
-            }
+            
+            if($broken && !$service)
+                break;
         }
         
         if(!$service)
