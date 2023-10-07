@@ -97,38 +97,27 @@ class Router {
         array_shift($exploded);
         
         $routes = $this -> routes;
-        $service = null;
-        $path = null;
+        $service = $routes['service'];
+        $path = '';
         $broken = false;
         foreach($exploded as $part) {
-            echo "Processing |$part|\n";
             if(!$broken) {
-                echo "Not broken\n";
+                if(isset($routes['sub'][$part]))
+                    $routes = $routes['sub'][$part];
+                else
+                    $broken = true;
+                
                 if(isset($routes['service'])) {
-                    echo "Set service ".$routes['service']."\n";
                     $service = $routes['service'];
                     $path = '';
-                } else echo "Not found service\n";
-                
-                if(isset($routes['sub'][$part])) {
-                    $routes = $routes['sub'][$part];
-                    echo "Recursion\n";
                 }
-                else {
-                    $broken = true;
-                    echo "No recursion\n";
-                }
-            }else echo "Broken\n";
+            }
             
             $path .= '/'.$part;
             
-            if($broken && !$service) {
-                echo "Breaking\n";
+            if($broken && !$service)
                 break;
-            }
         }
-        if($path == '')
-            $path = '/';
         
         if(!$service)
             throw new Error('INVALID_ENDPOINT', 'Invalid endpoint', 404);
