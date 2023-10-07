@@ -106,7 +106,7 @@ class Router {
                 echo "Not broken\n";
                 if(isset($routes['service'])) {
                     $service = $routes['service'];
-                    $path = '/'.$part;
+                    $path = '';
                 }
                 
                 if(isset($routes['sub'][$part]))
