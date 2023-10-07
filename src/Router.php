@@ -119,6 +119,8 @@ class Router {
             if($broken && !$service)
                 break;
         }
+        if($path == '')
+            $path = '/';
         
         if(!$service)
             throw new Error('INVALID_ENDPOINT', 'Invalid endpoint', 404);
