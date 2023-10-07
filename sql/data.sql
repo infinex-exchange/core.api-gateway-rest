@@ -3,4 +3,5 @@ insert into routes(path, service) values
     ('/account/v2', 'account.account'),
     ('/affiliate/v2', 'affiliate.affiliate'),
     ('/wallet/v2', 'wallet.wallet'),
-    ('/wallet/v2/io', 'wallet.io');
+    ('/wallet/v2/io', 'wallet.io'),
+    ('/wallet/v2/addressbook', 'wallet.addressbook');
