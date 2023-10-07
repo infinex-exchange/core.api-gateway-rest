@@ -114,16 +114,20 @@ class Router {
                 else
                     $broken = true;
             }
-            else if($service) {
-                echo "Broken but service\n";
-                $path .= '/'.$part;
-            }
-            else {
-                echo "Broken and no service\n";
-                break;
+            if($broken) {
+                if($service) {
+                    echo "Broken but service\n";
+                    $path .= '/'.$part;
+                }
+                else {
+                    echo "Broken and no service\n";
+                    break;
+                }
             }
         }
-            
+        if($path == '')
+            $path = '/';
+        
         if(!$service)
             throw new Error('INVALID_ENDPOINT', 'Invalid endpoint', 404);
         var_dump($service);
