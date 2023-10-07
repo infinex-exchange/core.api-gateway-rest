@@ -114,16 +114,11 @@ class Router {
                 else
                     $broken = true;
             }
-            if($broken) {
-                if($service) {
-                    echo "Broken but service\n";
-                    $path .= '/'.$part;
-                }
-                else {
-                    echo "Broken and no service\n";
-                    break;
-                }
-            }
+            
+            $path .= '/'.$part;
+            
+            if($broken && !$service)
+                break;
         }
         if($path == '')
             $path = '/';
