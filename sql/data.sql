@@ -6,4 +6,5 @@ insert into routes(path, service) values
     ('/wallet/v2', 'wallet.wallet'),
     ('/wallet/v2/io', 'wallet.io'),
     ('/wallet/v2/addressbook', 'wallet.addressbook'),
-    ('/info/v2/popup', 'info.popup');
+    ('/info/v2/popup', 'info.popup'),
+    ('/info/v2/announcements', 'info.announcements');
