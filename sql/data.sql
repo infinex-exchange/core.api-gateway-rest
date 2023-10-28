@@ -9,4 +9,5 @@ insert into routes(path, service) values
     ('/info/v2/popup', 'info.popup'),
     ('/info/v2/announcements', 'info.announcements'),
     ('/info/v2/support', 'info.support'),
-    ('/vote/v2', 'vote.vote');
+    ('/vote/v2', 'vote.vote').
+    ('/mining/v2', 'mining.mining');
